@@ -1,0 +1,87 @@
+name: Build and deploy
+
+on:
+  push:
+    branches: [main]
+  workflow_dispatch:
+
+permissions:
+  contents: write
+  pages: write
+  id-token: write
+
+concurrency:
+  group: build
+  cancel-in-progress: true
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      # One-time: unpack the uploaded source ZIP into the repo and commit it
+      - name: Unpack uploaded source
+        if: ${{ hashFiles('reddot.zip') != '' }}
+        run: |
+          unzip -o -q reddot.zip -x '.github/*'
+          git rm -q reddot.zip
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add -A
+          git commit -q -m "Add Red.Dot source"
+          git push
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: npm
+
+      - uses: actions/setup-java@v4
+        with:
+          distribution: temurin
+          java-version: 21
+
+      - run: npm ci
+      - run: npm run typecheck
+      - run: npm test
+
+      - name: Security rules tests (Firestore emulator)
+        run: npm run test:rules
+
+      - name: Build website (GitHub Pages)
+        run: VITE_BASE=/${{ github.event.repository.name }}/ npm run build
+
+      - uses: actions/upload-pages-artifact@v3
+        with:
+          path: dist
+
+      - name: Build Android app
+        run: |
+          npm run build
+          npx cap sync android
+          chmod +x android/gradlew
+          cd android && ./gradlew assembleDebug --no-daemon
+          cp app/build/outputs/apk/debug/app-debug.apk ../RedDot.apk
+
+      - uses: actions/upload-artifact@v4
+        with:
+          name: RedDot-apk
+          path: RedDot.apk
+
+      - name: Publish APK as a release
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          gh release delete latest --yes --cleanup-tag || true
+          gh release create latest RedDot.apk --title "Red.Dot Android (latest build)" --notes "Install RedDot.apk on an Android phone (allow installs from your browser). Built from ${{ github.sha }}."
+
+  deploy:
+    needs: build
+    runs-on: ubuntu-latest
+    environment:
+      name: github-pages
+      url: ${{ steps.deployment.outputs.page_url }}
+    steps:
+      - id: deployment
+        uses: actions/deploy-pages@v4
