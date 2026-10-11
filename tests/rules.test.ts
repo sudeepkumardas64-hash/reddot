@@ -57,10 +57,11 @@ describe("requests", () => {
 describe("chat", () => {
   const thread = { participants: ["alice", "bob"], names: { alice: "Asha", bob: "Bala" }, requestId: "r1", lastMessage: "", updatedAt: serverTimestamp() };
   it("participants can create thread and send messages; outsiders cannot read", async () => {
-    await assertSucceeds(setDoc(doc(as("bob"), "threads/alice_bob"), thread));
-    const b = writeBatch(as("bob"));
-    b.set(doc(collection(as("bob"), "threads/alice_bob/messages")), { senderId: "bob", text: "I can donate", createdAt: serverTimestamp() });
-    b.update(doc(as("bob"), "threads/alice_bob"), { lastMessage: "I can donate", updatedAt: serverTimestamp() });
+    const bob = as("bob");
+    await assertSucceeds(setDoc(doc(bob, "threads/alice_bob"), thread));
+    const b = writeBatch(bob);
+    b.set(doc(collection(bob, "threads/alice_bob/messages")), { senderId: "bob", text: "I can donate", createdAt: serverTimestamp() });
+    b.update(doc(bob, "threads/alice_bob"), { lastMessage: "I can donate", updatedAt: serverTimestamp() });
     await assertSucceeds(b.commit());
     await assertSucceeds(getDocs(collection(as("alice"), "threads/alice_bob/messages")));
     await assertFails(getDocs(collection(as("eve"), "threads/alice_bob/messages")));
