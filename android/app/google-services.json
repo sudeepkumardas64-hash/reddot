@@ -1,0 +1,27 @@
+{
+  "project_info": {
+    "project_number": "606369861220",
+    "project_id": "reddot-3e3bd",
+    "storage_bucket": "reddot-3e3bd.firebasestorage.app"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:606369861220:android:37c28715a68a8cd4a35971",
+        "android_client_info": { "package_name": "org.reddot.app" }
+      },
+      "oauth_client": [
+        { "client_id": "606369861220-mgfp205hgft5ki76ljc6i1913h4j31g0.apps.googleusercontent.com", "client_type": 3 }
+      ],
+      "api_key": [{ "current_key": "AIzaSyCn8hMpnoreuIYH6jhlICV6boSgPGR1jOU" }],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            { "client_id": "606369861220-mgfp205hgft5ki76ljc6i1913h4j31g0.apps.googleusercontent.com", "client_type": 3 }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

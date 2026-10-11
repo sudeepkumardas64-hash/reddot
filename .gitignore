@@ -1,0 +1,9 @@
+node_modules
+dist
+.env.local
+*.log
+android/.gradle
+android/app/build
+android/build
+.firebase
+android/app/release.keystore

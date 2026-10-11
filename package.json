@@ -1,0 +1,36 @@
+{
+  "name": "reddot",
+  "private": true,
+  "version": "1.0.0",
+  "type": "module",
+  "scripts": {
+    "dev": "vite",
+    "build": "tsc -b && vite build",
+    "preview": "vite preview",
+    "typecheck": "tsc -b",
+    "cap:sync": "npm run build && npx cap sync android",
+    "test:rules": "firebase emulators:exec --only firestore --project demo-reddot \"vitest run tests/rules.test.ts\"",
+    "test": "vitest run tests/blood.test.ts"
+  },
+  "dependencies": {
+    "@capacitor-firebase/authentication": "^7.5.0",
+    "@capacitor/android": "^7.6.9",
+    "@capacitor/core": "^7.6.9",
+    "@capacitor/geolocation": "^7.1.8",
+    "firebase": "^11.10.0",
+    "react": "^18.3.1",
+    "react-dom": "^18.3.1"
+  },
+  "devDependencies": {
+    "@capacitor/assets": "^3.0.5",
+    "@capacitor/cli": "^7.6.9",
+    "@firebase/rules-unit-testing": "^4.0.1",
+    "@types/react": "^18.3.31",
+    "@types/react-dom": "^18.3.7",
+    "@vitejs/plugin-react": "^4.7.0",
+    "firebase-tools": "^15.33.0",
+    "typescript": "5.6",
+    "vite": "^6.4.4",
+    "vitest": "^3.2.7"
+  }
+}
