@@ -74,7 +74,8 @@ jobs:
           GH_TOKEN: ${{ github.token }}
         run: |
           gh release delete latest --yes --cleanup-tag || true
-          gh release create latest RedDot.apk --title "Red.Dot Android (latest build)" --notes "Install RedDot.apk on an Android phone (allow installs from your browser). Built from ${{ github.sha }}."
+          gh release delete android --yes --cleanup-tag || true
+          gh release create android RedDot.apk --latest --title "Red.Dot Android (latest build)" --notes "Install RedDot.apk on an Android phone (allow installs from your browser). Built from ${{ github.sha }}."
 
   deploy:
     needs: build
